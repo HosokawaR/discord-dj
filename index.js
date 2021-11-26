@@ -4,15 +4,11 @@ const { Client, Intents } = require("discord.js")
 const { default: Collection } = require("@discordjs/collection")
 const { clientId, guildId, token } = require("./config.json")
 const { deployCommand, commands } = require("./deploy-commands")
-const { Musics } = require("./setup-database")
-const { where } = require("sequelize/dist")
-const http = require("http")
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
 
 client.on("ready", async () => {
   console.log(`Logged in as ${client.user.tag}!`)
-  Musics.sync()
 })
 
 client.on("interactionCreate", async (interaction) => {
