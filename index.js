@@ -4,8 +4,12 @@ const { Client, Intents } = require("discord.js")
 const { default: Collection } = require("@discordjs/collection")
 const { clientId, guildId, token } = require("./config.json")
 const { deployCommand, commands } = require("./deploy-commands")
+const { Player } = require("discord-player")
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES],
+})
+const player = new Player(client)
 
 client.on("ready", async () => {
   console.log(`Logged in as ${client.user.tag}!`)
@@ -25,15 +29,11 @@ client.on("interactionCreate", async (interaction) => {
     }
 
     try {
-      await command.execute(interaction)
+      await command.execute(interaction, player)
     } catch (error) {
       console.error(error)
       await interaction.reply({ content: "エラーが発生しました。" })
     }
-  } else if (interaction.isSelectMenu()) {
-    console.log(interaction)
-    // await Musics.update({evalution: Number(interaction.values[0])}, where: {url: });
-    await interaction.reply({ content: "評価を受け取りました。" })
   }
 })
 ;(async () => await deployCommand)()
