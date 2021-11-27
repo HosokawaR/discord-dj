@@ -1,5 +1,6 @@
 node_modules
 .env
-config.json
+config.ts
 *.sqlite
 *.log
+dist
