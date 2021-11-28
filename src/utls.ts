@@ -1,5 +1,5 @@
 import { APIInteractionGuildMember } from "discord-api-types"
-import { GuildMember } from "discord.js"
+import { CacheType, CommandInteraction, GuildMember } from "discord.js"
 
 export const isGuildMember = (
     x: GuildMember | APIInteractionGuildMember
