@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
 import { QueryType } from "discord-player"
+import { botName } from "~/config"
 import { Command } from "../types"
 import { isGuildMember } from "../utls"
 
@@ -17,7 +18,8 @@ const command: Command = {
         if (!isGuildMember(interaction.member)) return
         if (!interaction.member.voice.channelId)
             await interaction.reply({
-                content: "You are not in a voice channel!",
+                content:
+                    "ボイスチャンネルに入室した状態でコマンドを入力してください。",
                 ephemeral: true,
             })
         if (!interaction.guild) return
@@ -27,7 +29,7 @@ const command: Command = {
                 interaction.guild.me.voice.channelId
         )
             interaction.reply({
-                content: "You are not in my voice channel!",
+                content: `${botName} と同じボイスチャンネルに入室した状態でコマンドを入力してください。`,
                 ephemeral: true,
             })
         const query = interaction.options.get("query")?.value
@@ -52,7 +54,8 @@ const command: Command = {
         } catch {
             queue.destroy()
             interaction.reply({
-                content: "Could not join your voice channel!",
+                content:
+                    "あなたと同じボイスチャンネルに参加することが出来ませんでした。",
                 ephemeral: true,
             })
         }
@@ -66,13 +69,13 @@ const command: Command = {
             .then((x) => x.tracks[0])
         if (!track)
             await interaction.followUp({
-                content: `❌ | Track **${query}** not found!`,
+                content: `**${query}** が見つかりませんでした。`,
             })
 
         queue.play(track)
 
         await interaction.followUp({
-            content: `⏱️ | Loading track **${track.title}**!`,
+            content: `**${track.title}** を再生中です。`,
         })
     },
 }
