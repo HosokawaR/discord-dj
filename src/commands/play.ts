@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
+import { QueryType } from "discord-player"
 import { Command } from "../types"
 import { isGuildMember } from "../utls"
 
@@ -39,6 +40,9 @@ const command: Command = {
             ytdlOptions: {
                 filter: "audioonly",
             },
+            leaveOnEmpty: false,
+            leaveOnEnd: false,
+            leaveOnStop: false,
         })
 
         // verify vc connection
@@ -57,6 +61,7 @@ const command: Command = {
         const track = await player
             .search(query, {
                 requestedBy: interaction.user,
+                searchEngine: QueryType.YOUTUBE_SEARCH,
             })
             .then((x) => x.tracks[0])
         if (!track)
