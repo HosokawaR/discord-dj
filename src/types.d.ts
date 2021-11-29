@@ -4,11 +4,17 @@ import {
     Awaitable,
     CacheType,
     CommandInteraction,
+    Guild,
     GuildMember,
 } from "discord.js"
 
+export type CommandActionInteraction = CommandInteraction<CacheType> & {
+    guild: Guild
+    member: GuildMember
+}
+
 type CommandAction = (
-    interaction: CommandInteraction<CacheType>,
+    interaction: CommandActionInteraction,
     player: Player
 ) => Awaitable<void>
 

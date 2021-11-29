@@ -2,7 +2,7 @@ import { Client, Intents } from "discord.js"
 import { clientId, guildId, token } from "./config"
 import { deployCommand, commands } from "./deploy-commands"
 import { Player } from "discord-player"
-import { isGuildMember } from "./utls"
+import { canCommandBot, commandTypeGard, isGuildMember } from "./utls"
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES],
@@ -27,6 +27,11 @@ client.on("interactionCreate", async (interaction) => {
         }
 
         try {
+            if (!commandTypeGard(interaction)) {
+                await interaction.reply({ content: "エラーが発生しました。" })
+                return
+            }
+            if (!canCommandBot(interaction)) return
             await command.execute(interaction, player)
         } catch (error) {
             console.error(error)

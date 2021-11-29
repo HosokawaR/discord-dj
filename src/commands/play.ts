@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders"
 import { QueryType } from "discord-player"
 import { botName } from "~/config"
 import { Command } from "../types"
-import { isGuildMember } from "../utls"
+import { canCommandBot, hasOnlyGuildMember, isGuildMember } from "../utls"
 
 const command: Command = {
     overview: new SlashCommandBuilder()
@@ -15,23 +15,6 @@ const command: Command = {
                 .setRequired(true)
         ),
     async execute(interaction, player) {
-        if (!isGuildMember(interaction.member)) return
-        if (!interaction.member.voice.channelId)
-            await interaction.reply({
-                content:
-                    "ボイスチャンネルに入室した状態でコマンドを入力してください。",
-                ephemeral: true,
-            })
-        if (!interaction.guild) return
-        if (
-            interaction?.guild?.me?.voice.channelId &&
-            interaction.member.voice.channelId !==
-                interaction.guild.me.voice.channelId
-        )
-            interaction.reply({
-                content: `${botName} と同じボイスチャンネルに入室した状態でコマンドを入力してください。`,
-                ephemeral: true,
-            })
         const query = interaction.options.get("query")?.value
         // TODO: 明示的なエラー
         if (!query || typeof query !== "string") return

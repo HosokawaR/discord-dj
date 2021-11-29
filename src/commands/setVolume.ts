@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
 import { Command } from "../types"
-import { isGuildMember } from "../utls"
+import { canCommandBot, hasOnlyGuildMember, isGuildMember } from "../utls"
 
 const command: Command = {
     overview: new SlashCommandBuilder()
@@ -13,22 +13,9 @@ const command: Command = {
                 .setRequired(true)
         ),
     async execute(interaction, player) {
-        if (!isGuildMember(interaction.member)) return
-        if (!interaction.member.voice.channelId)
-            await interaction.reply({
-                content: "You are not in a voice channel!",
-                ephemeral: true,
-            })
-        if (!interaction.guild) return
-        if (
-            interaction?.guild?.me?.voice.channelId &&
-            interaction.member.voice.channelId !==
-                interaction.guild.me.voice.channelId
-        )
-            interaction.reply({
-                content: "You are not in my voice channel!",
-                ephemeral: true,
-            })
+        if (!hasOnlyGuildMember(interaction)) return
+
+        if (!canCommandBot(interaction)) return
 
         await interaction.deferReply()
         const queue = player.getQueue(interaction.guildId)
