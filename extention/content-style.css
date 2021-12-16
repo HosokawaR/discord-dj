@@ -1,0 +1,36 @@
+ytd-thumbnail {
+    position: relative;
+}
+
+.mlfy-button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.mlfy-top-button {
+    position: absolute;
+    z-index: 100;
+    left: 5px;
+    bottom: 5px;
+    background-color: rgba(0, 0, 0, 0.808);
+    opacity: 0;
+}
+
+.mlfy-top-button:hover {
+    background-color: rgba(20, 96, 99, 0.801);
+}
+
+.mlfy-indiv-button {
+    height: 100%;
+}
+
+.mlfy-button_icon {
+    width: 60%;
+    height: 60%;
+    margin: 20%;
+}
+
+ytd-thumbnail:hover .mlfy-button {
+    opacity: 1;
+}
