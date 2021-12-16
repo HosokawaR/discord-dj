@@ -1,5 +1,4 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
-import { Player } from "discord-player"
 import {
     Awaitable,
     CacheType,
@@ -13,10 +12,7 @@ export type CommandActionInteraction = CommandInteraction<CacheType> & {
     member: GuildMember
 }
 
-type CommandAction = (
-    interaction: CommandActionInteraction,
-    player: Player
-) => Awaitable<void>
+type CommandAction = (interaction: CommandActionInteraction) => Awaitable<void>
 
 export type Command = {
     overview: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">

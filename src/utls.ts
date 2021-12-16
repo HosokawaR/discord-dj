@@ -2,6 +2,7 @@ import { APIInteractionGuildMember } from "discord-api-types"
 import { CacheType, CommandInteraction, Guild, GuildMember } from "discord.js"
 import { botName } from "./config"
 import { CommandAction, CommandActionInteraction } from "./types"
+import axios from "axios"
 
 export const isGuildMember = (
     x: GuildMember | APIInteractionGuildMember
@@ -43,5 +44,20 @@ export const canCommandBot = async (
             ephemeral: true,
         })
         return
+    }
+}
+
+export const getYouTubeUrl = (movieId: string) =>
+    `https://www.youtube.com/watch?v=${movieId}`
+
+export const getOembedUrl = (url: string) =>
+    ` https://www.youtube.com/oembed?url=${url}&format=json`
+
+export const fetchMusicOvewview = async (url: string) => {
+    const res = await axios.get(getOembedUrl(url))
+    return {
+        title: res.data.title,
+        thumbnailUrl: res.data.thumbnail_url,
+        author: res.data.author_name,
     }
 }
