@@ -1,6 +1,6 @@
 import { APIInteractionGuildMember } from "discord-api-types"
 import { CacheType, CommandInteraction, Guild, GuildMember } from "discord.js"
-import { botName } from "./config"
+import { botName, YOUTUBE_API_KEY } from "./config"
 import { CommandAction, CommandActionInteraction } from "./types"
 import axios from "axios"
 
@@ -60,4 +60,16 @@ export const fetchMusicOvewview = async (url: string) => {
         thumbnailUrl: res.data.thumbnail_url,
         author: res.data.author_name,
     }
+}
+
+export const searchYouTube = async (
+    query: string
+): Promise<string | undefined> => {
+    const url = encodeURI(
+        `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&type=video&q=${query}`
+    )
+    const response = await axios.get(url)
+    const result = response.data.items
+    if (result.length === 0) return
+    return response.data.items[0].id.videoId as string
 }

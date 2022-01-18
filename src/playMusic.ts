@@ -8,12 +8,12 @@ import {
     joinVoiceChannel,
 } from "@discordjs/voice"
 import { BaseGuildVoiceChannel, Guild, VoiceChannel } from "discord.js"
-import { getYouTubeUrl } from "./utls"
+import { searchYouTube } from "./utls"
 
 export const playMusic = async (
     guild: Guild,
     voiceChannel: VoiceChannel | BaseGuildVoiceChannel,
-    musicId: string
+    query: string
 ) => {
     const connection = joinVoiceChannel({
         channelId: voiceChannel.id,
@@ -22,14 +22,20 @@ export const playMusic = async (
         selfDeaf: true,
     })
 
-    const stream = ytdl(getYouTubeUrl(musicId), { filter: "audioonly" })
+    const musicId = await searchYouTube(query)
+    if (!musicId) return false
+
+    const stream = ytdl(musicId, { filter: "audioonly" })
     const resource = createAudioResource(stream, {
         inputType: StreamType.Arbitrary,
     })
+
     const player = createAudioPlayer()
 
     player.play(resource)
     connection.subscribe(player)
 
     player.on(AudioPlayerStatus.Idle, () => console.log("再生終了"))
+
+    return true
 }

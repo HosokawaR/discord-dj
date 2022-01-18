@@ -1,12 +1,19 @@
 import { Client } from "discord.js"
-import { commandChannelId, guildId, voiceChannelId } from "./config"
+import {
+    AIRTABLE_BASE,
+    AIRTABLE_KEY,
+    commandChannelId,
+    guildId,
+    voiceChannelId,
+} from "./config"
 import { generateEmbed } from "./generateEmbed"
 import { playMusic } from "./playMusic"
-import { fetchMusicOvewview, getYouTubeUrl } from "./utls"
+import { fetchMusicOvewview, getYouTubeUrl, searchYouTube } from "./utls"
+import * as Airtable from "airtable"
 
 export const addTrack = async (
     client: Client,
-    musicId: string,
+    query: string,
     userName: string
 ) => {
     const voiceChannel = client.channels.cache.get(voiceChannelId)
@@ -22,9 +29,26 @@ export const addTrack = async (
     const commandChannel = client.channels.cache.get(commandChannelId)
     if (!commandChannel?.isText()) return
 
-    await playMusic(guild, voiceChannel, musicId)
+    const successed = await playMusic(guild, voiceChannel, query)
+    if (!successed) {
+        commandChannel.send(`${query} の検索結果がありませんでした。`)
+        return
+    }
 
+    const musicId = await searchYouTube(query)
+    if (!musicId) return
     const musicOverview = await fetchMusicOvewview(getYouTubeUrl(musicId))
+
+    Airtable.configure({
+        apiKey: AIRTABLE_KEY,
+    })
+    const base = Airtable.base(AIRTABLE_BASE)
+    base("logs").create({
+        id: musicId,
+        name: musicOverview.title,
+        create_by: user.displayName,
+    })
+
     commandChannel.send({
         embeds: [
             generateEmbed(
