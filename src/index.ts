@@ -6,7 +6,11 @@ import * as http from "http"
 import { addTrack } from "./addTrack"
 
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES],
+    intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_VOICE_STATES,
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    ],
 })
 
 client.login(token)
@@ -41,5 +45,4 @@ client.on("interactionCreate", async (interaction) => {
         }
     }
 })
-
 ;(async () => await deployCommand)()

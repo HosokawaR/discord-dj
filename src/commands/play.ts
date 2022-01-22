@@ -9,13 +9,14 @@ const command: Command = {
         .addStringOption((option) =>
             option
                 .setName("query")
-                .setDescription("追加したい曲の URL")
+                .setDescription("曲名 or YouTube URL")
                 .setRequired(true)
         ),
     async execute(interaction) {
         const query = interaction.options.get("query")?.value
         if (typeof query !== "string") return
         const client = interaction.client
+        await interaction.reply({ content: "準備中…" })
         await addTrack(client, query, interaction.user.username)
     },
 }
