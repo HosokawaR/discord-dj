@@ -1,0 +1,10 @@
+export const token = ""
+export const clientId = ""
+export const guildId = ""
+export const botName = ""
+export const voiceChannelId = ""
+export const commandChannelId = ""
+
+export const AIRTABLE_BASE = ""
+
+export const YOUTUBE_API_KEY = ""

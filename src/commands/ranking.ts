@@ -7,7 +7,7 @@ import { Command } from "../types"
 
 type Log = { name: string; rate: 0 }
 
-const averageByMusic = (logs: Log[]) => { }
+const averageByMusic = (logs: Log[]) => {}
 
 const command: Command = {
     overview: new SlashCommandBuilder()
