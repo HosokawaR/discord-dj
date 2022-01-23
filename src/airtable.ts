@@ -35,3 +35,32 @@ export const addRating = async (
         }))
     )
 }
+
+type Ranking = {
+    name: string
+    rate: number
+}
+
+export const fetchRatings = async () => {
+    return new Promise<Ranking[]>((resolve, reject) => {
+        base("logs")
+            .select({
+                maxRecords: 10,
+                view: "byMusic",
+                sort: [{ field: "averageRate", direction: "desc" }],
+            })
+            .firstPage((err, records) => {
+                if (err) return reject({})
+                const ranking =
+                    records?.map((record) => {
+                        const name = record.get("name")
+                        const rate = record.get("averageRate")
+                        return {
+                            name: typeof name === "string" ? name : "",
+                            rate: typeof rate === "number" ? rate : 0,
+                        }
+                    }) || []
+                resolve(ranking)
+            })
+    })
+}

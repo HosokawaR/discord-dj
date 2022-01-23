@@ -1,33 +1,40 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
 import * as Airtable from "airtable"
 import { MessageEmbed } from "discord.js"
+import { fetchRatings } from "../airtable"
 import { AIRTABLE_BASE, AIRTABLE_KEY } from "../config"
 import { Command } from "../types"
+
+type Log = { name: string; rate: 0 }
+
+const averageByMusic = (logs: Log[]) => { }
 
 const command: Command = {
     overview: new SlashCommandBuilder()
         .setName("ranking")
         .setDescription("再生ランキングを表示する"),
     async execute(interaction) {
-        Airtable.configure({
-            apiKey: AIRTABLE_KEY,
+        const ranking = await fetchRatings()
+
+        if (!ranking)
+            return interaction.reply({
+                content: "ランキングの失敗に取得しました",
+            })
+
+        const fields = ranking.map((r) => ({
+            name: r.name,
+            value: "平均得評価: " + String(r.rate),
+        }))
+
+        const embed = new MessageEmbed()
+            .setTitle("投票ランキング")
+            .addFields(...fields)
+
+        interaction.channel?.send({
+            embeds: [embed],
         })
-        const base = Airtable.base(AIRTABLE_BASE)
-        base("logs")
-            .select({
-                maxRecords: 10,
-                view: "main",
-            })
-            .firstPage((err, records) => {
-                const fields = records?.map((record, index) => ({
-                    name: `${index + 1}位`,
-                    value: record.get("name") as string,
-                }))
-                const embed = new MessageEmbed().addFields(...fields)
-                interaction.channel?.send({
-                    embeds: [embed],
-                })
-            })
+
+        interaction.reply({ content: "投票ランキングを取得中…" })
     },
 }
 
